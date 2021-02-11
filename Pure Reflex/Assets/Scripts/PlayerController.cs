@@ -5,6 +5,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Health))]
+[RequireComponent(typeof(HeroCombat))]
 
 public class PlayerController : MonoBehaviour
 {
@@ -27,10 +28,16 @@ public class PlayerController : MonoBehaviour
     [Header("Statistics")]
     public bool hasRequest;
 
+    // Scripts
+    HeroCombat heroCombatScript;
+
     Health health;
 
+    //----------------------------------- Basic Movement -----------------------------------\\
     void Start()
     {
+        heroCombatScript = GetComponent<HeroCombat>();
+
         hasRequest = false;
         destination = this.transform.position;
         agent.updateRotation = false;
@@ -52,28 +59,26 @@ public class PlayerController : MonoBehaviour
 
                 if (Physics.Raycast(ray, out hit))
                 {
-                    // set destination
-                    hasRequest = true;
-                    destination = hit.point;
-                    agent.SetDestination(destination);
+                    if (hit.collider.tag == "Floor")
+                    {   
+                        agent.stoppingDistance = 0;
+                        heroCombatScript.targetEnemy = null;
+
+                        // set destination
+                        hasRequest = true;
+                        destination = hit.point;
+                        agent.SetDestination(destination);
+                    }
                 }
             }
         }
 
-        else 
+        else
             agent.ResetPath();
-    }
-
-    void KeyInput()
-    {
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            agent.ResetPath();
-        }
     }
 
     void Movement()
-    {       
+    {
         // Obtain current destination in full path
         targetPosition = agent.steeringTarget;
 
@@ -95,6 +100,8 @@ public class PlayerController : MonoBehaviour
         else
             agent.isStopped = false;
     }
+
+    //----------------------------------- Target View -----------------------------------\\  
     Quaternion transRot;
     private void CheckRotation()
     {
@@ -126,5 +133,35 @@ public class PlayerController : MonoBehaviour
                 hasRequest = false;
             }
         }
+    }
+
+    //----------------------------------- Hotkeys -----------------------------------\\  
+    void KeyInput()
+    {
+        // Stop Action
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            heroCombatScript.targetEnemy = null;
+            agent.ResetPath();
+        }
+    }
+
+    //----------------------------------- Combat -----------------------------------\\  
+
+    public void setDesination(GameObject target)
+    {
+        // set destination
+        hasRequest = true;
+        destination = target.transform.position;
+        agent.SetDestination(destination);
+    }
+
+    public void setDesination(GameObject target, float attackRange)
+    {
+        // set destination
+        hasRequest = true;
+        destination = target.transform.position;
+        agent.SetDestination(destination);
+        agent.stoppingDistance = attackRange;
     }
 }

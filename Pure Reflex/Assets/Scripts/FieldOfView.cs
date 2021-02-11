@@ -8,8 +8,10 @@ using UnityEngine;
 /// </summary>
 public class FieldOfView : MonoBehaviour
 {
+    // Radius Around player
     public float viewRadius;
     [Range(0,360)]
+    // Angle in radius the player can see
     public float viewAngle;
 
     public LayerMask targetMask;
