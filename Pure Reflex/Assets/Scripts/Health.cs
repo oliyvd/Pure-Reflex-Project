@@ -2,36 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// A class managing the players health
+/// </summary>
 public class Health : MonoBehaviour
-{
+{   
     public int health;
     public bool dead;
-    // Start is called before the first frame update
+    
     void Start()
     {
         dead = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
         DeathHandler();
     }
 
-    // Public method to inflict damage
+    /// <summary>
+    /// Public method to inflict damage
+    /// </summary>
+    /// <param name="amount">Amount to damage</param>
     public void DealDamage(int amount)
     {
         if (!dead)
             health -= amount;
     }
 
-    // Public method to heal
+    /// <summary>
+    /// Public method to heal 
+    /// </summary>
+    /// <param name="amount">Amount to heal</param>
     public void heal(int amount)
     {   
         if (!dead)
         health += amount; 
     }
 
+    /// <summary>
+    /// Handles if the player is dead
+    /// </summary>
     void DeathHandler()
     {
         if (health <= 0)

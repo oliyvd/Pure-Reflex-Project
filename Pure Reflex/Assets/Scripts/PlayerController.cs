@@ -7,6 +7,9 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(HeroCombat))]
 
+/// <summary>
+/// A class used for managing and controlling player movement
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     [Header("Camera")]
@@ -30,10 +33,8 @@ public class PlayerController : MonoBehaviour
 
     // Scripts
     HeroCombat heroCombatScript;
+    Health healthScript;
 
-    Health health;
-
-    //----------------------------------- Basic Movement -----------------------------------\\
     void Start()
     {
         heroCombatScript = GetComponent<HeroCombat>();
@@ -41,11 +42,15 @@ public class PlayerController : MonoBehaviour
         hasRequest = false;
         destination = this.transform.position;
         agent.updateRotation = false;
-        health = GetComponent<Health>();
+        healthScript = GetComponent<Health>();
     }
+
+    //----------------------------------- Basic Movement -----------------------------------\\
+
     void Update()
-    {
-        if (!health.dead)
+    {   
+        // If player has health
+        if (!healthScript.dead)
         {
             RequestTracker();
             Movement();
@@ -58,7 +63,7 @@ public class PlayerController : MonoBehaviour
                 Ray ray = cam.ScreenPointToRay(Input.mousePosition);
 
                 if (Physics.Raycast(ray, out hit))
-                {
+                {   
                     if (hit.collider.tag == "Floor")
                     {   
                         agent.stoppingDistance = 0;
@@ -77,6 +82,9 @@ public class PlayerController : MonoBehaviour
             agent.ResetPath();
     }
 
+    /// <summary>
+    /// Controls player movement (including rotation and View Angle)
+    /// </summary>
     void Movement()
     {
         // Obtain current destination in full path
@@ -102,19 +110,26 @@ public class PlayerController : MonoBehaviour
     }
 
     //----------------------------------- Target View -----------------------------------\\  
-    Quaternion transRot;
+
+    Quaternion targetRotation;
+    /// <summary>
+    /// Rotates the play towards the target Position
+    /// </summary>
     private void CheckRotation()
     {
         // Obtain the rotation towards the target
         if (hasRequest)
-            transRot = Quaternion.LookRotation(agent.steeringTarget - this.transform.position, Vector3.up);
+            targetRotation = Quaternion.LookRotation(agent.steeringTarget - this.transform.position, Vector3.up);
 
         // Rotate towards the target
-        if (this.transform.rotation != transRot && transRot != Quaternion.Euler(Vector3.zero))
-            transform.rotation = Quaternion.Slerp(transRot, this.transform.rotation, RotationSpeed);
+        if (this.transform.rotation != targetRotation && targetRotation != Quaternion.Euler(Vector3.zero))
+            transform.rotation = Quaternion.Slerp(targetRotation, this.transform.rotation, RotationSpeed);
     }
 
-    // Calculates the an angle the player can see its new Target Position
+    /// <summary>
+    /// Calculates the an angle the player can see its new Target Position
+    /// </summary>
+    /// <returns>TRUE if in angle<br/>FALSE is not in angle</returns>
     bool MovementView()
     {
         Vector3 dirToTarget = (targetPosition - transform.position).normalized;
@@ -124,6 +139,9 @@ public class PlayerController : MonoBehaviour
         { return false; }
     }
 
+    /// <summary>
+    /// Checks if the navMesh as a request
+    /// </summary>
     void RequestTracker()
     {
         if (hasRequest)
@@ -135,7 +153,11 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //----------------------------------- Hotkeys -----------------------------------\\  
+    //----------------------------------- Hotkeys -----------------------------------\\ 
+
+    /// <summary>
+    /// A player input method 
+    /// </summary>
     void KeyInput()
     {
         // Stop Action
@@ -146,8 +168,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    //----------------------------------- Combat -----------------------------------\\  
+    //----------------------------------- Public Methods -----------------------------------\\  
 
+    /// <summary>
+    /// [Overloaded Method] Sets destination to target WITHOUT a stopping distance(attackRange)
+    /// </summary>
+    /// <param name="target">The navagent target</param>
     public void setDesination(GameObject target)
     {
         // set destination
@@ -155,7 +181,12 @@ public class PlayerController : MonoBehaviour
         destination = target.transform.position;
         agent.SetDestination(destination);
     }
-
+    
+    /// <summary>
+    /// [Overloaded Method] Sets destination to target WITH a stopping distance(attackRange)
+    /// </summary>
+    /// <param name="target">The navAgent target</param>
+    /// <param name="attackRange">The navAgent stop distance</param>
     public void setDesination(GameObject target, float attackRange)
     {
         // set destination

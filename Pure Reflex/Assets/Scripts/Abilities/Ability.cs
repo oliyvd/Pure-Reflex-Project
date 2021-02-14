@@ -17,8 +17,14 @@ public abstract class Ability
     [Header("Key")]
     public KeyCode useButton;
 
+    /// <summary>
+    /// Abstract method for customized ability code
+    /// /// </summary>
     public abstract void AbilityCode();
 
+    /// <summary>
+    /// Ability Method for activating the ability
+    /// </summary>
     void Use()
     {   
         CooldownManager();
@@ -31,7 +37,9 @@ public abstract class Ability
         }
     }
 
-    // Process ability cooldown
+    /// <summary>
+    /// Manage ability cooldown
+    /// </summary>
     private void CooldownManager()
     {
         abilityIconCD.fillAmount = cooldownCurrentTimer / 100 * cooldownTime;
