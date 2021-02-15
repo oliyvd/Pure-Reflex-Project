@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(NavMeshAgent))]
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Statistics))]
 [RequireComponent(typeof(HeroCombat))]
 
 /// <summary>
@@ -26,31 +26,36 @@ public class PlayerController : MonoBehaviour
     public GameObject graphics;
 
     [Header("MovementView")]
-    public float viewAngle;
+    
+    [SerializeField]
+    private float viewAngle;
 
     [Header("Statistics")]
     public bool hasRequest;
 
     // Scripts
     HeroCombat heroCombatScript;
-    Health healthScript;
+    Statistics statisicsScript;
+    FieldOfView fieldScript;
 
     void Start()
     {
+        fieldScript = GetComponent<FieldOfView>();
         heroCombatScript = GetComponent<HeroCombat>();
 
         hasRequest = false;
         destination = this.transform.position;
         agent.updateRotation = false;
-        healthScript = GetComponent<Health>();
+        statisicsScript = GetComponent<Statistics>();
     }
 
     //----------------------------------- Basic Movement -----------------------------------\\
 
     void Update()
     {   
+        viewAngle = fieldScript.viewAngle;
         // If player has health
-        if (!healthScript.dead)
+        if (!statisicsScript.dead)
         {
             RequestTracker();
             Movement();
@@ -126,6 +131,15 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(targetRotation, this.transform.rotation, RotationSpeed);
     }
 
+    public void CheckRotation(GameObject target)
+    {
+        // Obtain the rotation towards the target
+            targetRotation = Quaternion.LookRotation(target.transform.position - this.transform.position, Vector3.up);
+
+        // Rotate towards the target
+            transform.rotation = Quaternion.Slerp(targetRotation, this.transform.rotation, RotationSpeed);
+    }
+
     /// <summary>
     /// Calculates the an angle the player can see its new Target Position
     /// </summary>
@@ -133,6 +147,15 @@ public class PlayerController : MonoBehaviour
     bool MovementView()
     {
         Vector3 dirToTarget = (targetPosition - transform.position).normalized;
+        if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
+        { return true; }
+        else
+        { return false; }
+    }
+
+    public bool MovementView(GameObject target)
+    {
+        Vector3 dirToTarget = (target.transform.position - transform.position).normalized;
         if (Vector3.Angle(transform.forward, dirToTarget) < viewAngle / 2)
         { return true; }
         else

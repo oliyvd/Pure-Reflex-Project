@@ -133,12 +133,12 @@ GameObject:
   - component: {fileID: 71482060}
   - component: {fileID: 71482059}
   - component: {fileID: 71482054}
+  - component: {fileID: 71482058}
   - component: {fileID: 71482052}
   - component: {fileID: 71482061}
   - component: {fileID: 71482055}
   - component: {fileID: 71482056}
   - component: {fileID: 71482057}
-  - component: {fileID: 71482058}
   - component: {fileID: 71482062}
   - component: {fileID: 71482063}
   - component: {fileID: 71482064}
@@ -260,7 +260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agent: {fileID: 71482054}
   animator: {fileID: 954186981}
-  health: {fileID: 0}
+  statisticsScript: {fileID: 0}
   motionSmoothTime: 0.1
 --- !u!114 &71482058
 MonoBehaviour:
@@ -274,7 +274,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6010a372417db6498c5f5114958813c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 1
   health: 1
+  attackDmg: 2
+  attackSpeed: 0
+  attackTime: 0
   dead: 0
 --- !u!54 &71482059
 Rigidbody:
@@ -318,6 +322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd0df7d233e5aa0448f6c2a6bf960391, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 954186981}
   heroAttackType: 0
   targetEnemy: {fileID: 0}
   attackRange: 2
@@ -861,6 +866,24 @@ Transform:
   m_Father: {fileID: 71482053}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &728251758 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5930651934574334247, guid: 7bf201eb93a64ab47857ce81b796a258,
+    type: 3}
+  m_PrefabInstance: {fileID: 759312818}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &728251759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 728251758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fc5fca594e529c4b8472355fcc9139d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &748891182
 GameObject:
   m_ObjectHideFlags: 0
@@ -876,6 +899,8 @@ GameObject:
   - component: {fileID: 748891187}
   - component: {fileID: 748891188}
   - component: {fileID: 748891189}
+  - component: {fileID: 748891191}
+  - component: {fileID: 748891190}
   m_Layer: 9
   m_Name: Enemy
   m_TagString: Player
@@ -1000,6 +1025,43 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a60199e976dfd545b2d9a52f53394a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &748891190
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748891182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6010a372417db6498c5f5114958813c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 1
+  health: 10
+  attackDmg: 0
+  attackSpeed: 0
+  attackTime: 0
+  dead: 0
+--- !u!114 &748891191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 748891182}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd0df7d233e5aa0448f6c2a6bf960391, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  heroAttackType: 0
+  targetEnemy: {fileID: 0}
+  attackRange: 0
+  basicAtkIdle: 0
+  isHeroAlive: 0
+  performMeleeAttack: 1
 --- !u!1001 &759312818
 PrefabInstance:
   m_ObjectHideFlags: 0

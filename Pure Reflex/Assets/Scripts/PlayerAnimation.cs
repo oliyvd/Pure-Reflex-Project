@@ -5,12 +5,12 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Statistics))]
 public class PlayerAnimation : MonoBehaviour
 {
     public NavMeshAgent agent;
     public Animator animator;
-    public Health health;
+    public Statistics statisticsScript;
 
     // transition time between animations
     public float motionSmoothTime = .1f;
@@ -19,13 +19,13 @@ public class PlayerAnimation : MonoBehaviour
     void Start()
     {
         agent = gameObject.GetComponent<NavMeshAgent>();
-        health = gameObject.GetComponent<Health>();
+        statisticsScript = gameObject.GetComponent<Statistics>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool("Dead", health.dead);
+        animator.SetBool("Dead", statisticsScript.dead);
         movement();
     }
 

@@ -34,7 +34,7 @@ public class DaggerBehaviour : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            other.GetComponent<Health>().DealDamage(1);
+            other.GetComponent<Statistics>().DealDamage(1);
             Destroy(this.gameObject);
         }
         

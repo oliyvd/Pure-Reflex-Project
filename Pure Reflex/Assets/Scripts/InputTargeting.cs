@@ -26,20 +26,23 @@ public class InputTargeting : MonoBehaviour
         {
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
             {
-                // IF the player is targetable
-                if (hit.collider.GetComponent<Targetable>() != null)
+                if (!hit.collider.gameObject.Equals(selectedHero))
                 {
-                    if (hit.collider.gameObject.GetComponent<Targetable>().enemyType == Targetable.EnemyType.Player)
+                    // IF the player is targetable
+                    if (hit.collider.GetComponent<Targetable>() != null)
                     {
-                        selectedHero.GetComponent<HeroCombat>().targetEnemy = hit.collider.gameObject;
-                        Debug.Log("Enemy Located at: " + hit.collider.transform.position);
+                        if (hit.collider.gameObject.GetComponent<Targetable>().enemyType == Targetable.EnemyType.Player)
+                        {
+                            selectedHero.GetComponent<HeroCombat>().targetEnemy = hit.collider.gameObject;
+                            Debug.Log("Enemy Located at: " + hit.collider.transform.position);
 
-                    }
+                        }
 
-                    else if (hit.collider.GetComponent<Targetable>() == null)
-                    {
-                        selectedHero.GetComponent<HeroCombat>().targetEnemy = null;
+                        else if (hit.collider.GetComponent<Targetable>() == null)
+                        {
+                            selectedHero.GetComponent<HeroCombat>().targetEnemy = null;
 
+                        }
                     }
                 }
             }
