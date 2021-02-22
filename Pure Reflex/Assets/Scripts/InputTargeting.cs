@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class InputTargeting : MonoBehaviour
 {
+    private Statistics statisticsScript;
+
     public GameObject selectedHero;
     public bool heroPlayer;
     RaycastHit hit;
@@ -12,6 +14,8 @@ public class InputTargeting : MonoBehaviour
     {
         // Find player gameobject on Parent
         selectedHero = transform.parent.Find("Player").gameObject;
+
+        statisticsScript = transform.parent.Find("Player").GetComponent<Statistics>();
     }
 
     void Update()
@@ -22,31 +26,33 @@ public class InputTargeting : MonoBehaviour
     void Selected()
     {
         // Player Targeting
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
-            {
-                if (!hit.collider.gameObject.Equals(selectedHero))
+
+            if (!statisticsScript.dummy)
+                if (Input.GetMouseButtonDown(1))
                 {
-                    // IF the player is targetable
-                    if (hit.collider.GetComponent<Targetable>() != null)
+                    if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit, Mathf.Infinity))
                     {
-                        if (hit.collider.gameObject.GetComponent<Targetable>().enemyType == Targetable.EnemyType.Player)
+                        if (!hit.collider.gameObject.Equals(selectedHero))
                         {
-                            selectedHero.GetComponent<HeroCombat>().targetEnemy = hit.collider.gameObject;
-                            Debug.Log("Enemy Located at: " + hit.collider.transform.position);
+                            // IF the player is targetable
+                            if (hit.collider.GetComponent<Targetable>() != null)
+                            {
+                                if (hit.collider.gameObject.GetComponent<Targetable>().enemyType == Targetable.EnemyType.Player)
+                                {
+                                    selectedHero.GetComponent<HeroCombat>().targetEnemy = hit.collider.gameObject;
+                                    Debug.Log("Enemy Located at: " + hit.collider.transform.position);
 
-                        }
+                                }
 
-                        else if (hit.collider.GetComponent<Targetable>() == null)
-                        {
-                            selectedHero.GetComponent<HeroCombat>().targetEnemy = null;
+                                else if (hit.collider.GetComponent<Targetable>() == null)
+                                {
+                                    selectedHero.GetComponent<HeroCombat>().targetEnemy = null;
 
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
     }
     private bool hitting = false;
     private GameObject hitObject;

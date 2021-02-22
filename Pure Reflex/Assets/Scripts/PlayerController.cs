@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Photon.Pun;
 
 [RequireComponent(typeof(Camera))]
 [RequireComponent(typeof(NavMeshAgent))]
@@ -11,7 +12,9 @@ using UnityEngine.AI;
 /// A class used for managing and controlling player movement
 /// </summary>
 public class PlayerController : MonoBehaviour
-{
+{   
+    PhotonView PV;
+
     [Header("Camera")]
     public Camera cam;
     public NavMeshAgent agent;
@@ -32,6 +35,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Statistics")]
     public bool hasRequest;
+    public bool dummy;
 
     // Scripts
     HeroCombat heroCombatScript;
@@ -40,6 +44,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        PV = GetComponent<PhotonView>();
+        if (!PV.IsMine)
+            cam.enabled = false;
         fieldScript = GetComponent<FieldOfView>();
         heroCombatScript = GetComponent<HeroCombat>();
 
@@ -47,6 +54,7 @@ public class PlayerController : MonoBehaviour
         destination = this.transform.position;
         agent.updateRotation = false;
         statisicsScript = GetComponent<Statistics>();
+        dummy = statisicsScript.dummy;
     }
 
     //----------------------------------- Basic Movement -----------------------------------\\
@@ -54,34 +62,37 @@ public class PlayerController : MonoBehaviour
     void Update()
     {   
         viewAngle = fieldScript.viewAngle;
-        // If player has health
-        if (!statisicsScript.dead)
-        {
-            RequestTracker();
-            Movement();
-            KeyInput();
 
-            // Raycast mousedown to terrain
-            RaycastHit hit;
-            if (Input.GetMouseButtonDown(1))
+        if (!dummy)
+            // If player has health
+            if (!statisicsScript.dead)
             {
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                RequestTracker();
+                Movement();
+                KeyInput();
 
-                if (Physics.Raycast(ray, out hit))
-                {   
-                    if (hit.collider.tag == "Floor")
+                
+                // Raycast mousedown to terrain
+                RaycastHit hit;
+                if (Input.GetMouseButtonDown(1) && this.PV.IsMine)
+                {
+                    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+
+                    if (Physics.Raycast(ray, out hit))
                     {   
-                        agent.stoppingDistance = 0;
-                        heroCombatScript.targetEnemy = null;
+                        if (hit.collider.tag == "Floor")
+                        {   
+                            agent.stoppingDistance = 0;
+                            heroCombatScript.targetEnemy = null;
 
-                        // set destination
-                        hasRequest = true;
-                        destination = hit.point;
-                        agent.SetDestination(destination);
+                            // set destination
+                            hasRequest = true;
+                            destination = hit.point;
+                            agent.SetDestination(destination);
+                        }
                     }
                 }
             }
-        }
 
         else
             agent.ResetPath();

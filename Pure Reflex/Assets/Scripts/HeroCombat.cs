@@ -79,7 +79,8 @@ public class HeroCombat : MonoBehaviour
             if (targetEnemy.GetComponent<Targetable>().enemyType == Targetable.EnemyType.Player)
             {
                 Debug.Log("Dealt " + statisticsScript.attackDmg + " to " + targetEnemy.name);
-                targetEnemy.GetComponent<Statistics>().DealDamage(statisticsScript.attackDmg);
+
+                targetEnemy.GetComponent<Statistics>().RPCdamage(statisticsScript.attackDmg);
             }
         }
 
